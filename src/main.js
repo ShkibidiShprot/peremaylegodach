@@ -57,6 +57,7 @@ function createImpactSparks(x, y) {
 const BASE_SPEED_X = 140;
 const BASE_SPEED_Y = 110;
 const CORNER_MARGIN = 20;
+const PARTICLE_SIZE = 6;
 
 let posX = 50;
 let posY = 50;
