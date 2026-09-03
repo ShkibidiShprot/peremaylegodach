@@ -72,7 +72,6 @@ function createImpactSparks(x, y) {
 
 const BASE_SPEED_X = 140;
 const BASE_SPEED_Y = 110;
-const CORNER_MARGIN = 20;
 const PARTICLE_SIZE = 6;
 
 let posX = 50;
@@ -83,9 +82,20 @@ let lastTime = null;
 
 let imgWidth = bouncingImg.offsetWidth || 100;
 let imgHeight = bouncingImg.offsetHeight || 100;
+
+let viewW = document.documentElement.clientWidth;
+let viewH = window.innerHeight;
+
+function updateViewport() {
+  viewW = document.documentElement.clientWidth;
+  viewH = window.innerHeight;
+}
+
 window.addEventListener('load', () => {
   imgWidth = bouncingImg.offsetWidth || imgWidth;
   imgHeight = bouncingImg.offsetHeight || imgHeight;
+  updateViewport();
+  initSparks();
 });
 
 function animateDVD(currentTime) {
@@ -93,19 +103,11 @@ function animateDVD(currentTime) {
   const delta = Math.min((currentTime - lastTime) / 1000, 0.1);
   lastTime = currentTime;
 
-  const maxX = document.documentElement.clientWidth - imgWidth - 2;
-  const maxY = window.innerHeight - imgHeight - 2;
+  const maxX = viewW - imgWidth - 2;
+  const maxY = viewH - imgHeight - 2;
 
   posX += dirX * BASE_SPEED_X * delta;
   posY += dirY * BASE_SPEED_Y * delta;
-
-  const isNearX = posX <= CORNER_MARGIN || posX >= maxX - CORNER_MARGIN;
-  const isNearY = posY <= CORNER_MARGIN || posY >= maxY - CORNER_MARGIN;
-
-  if (isNearX && isNearY) {
-    dirX = -dirX;
-    createImpactSparks(posX + imgWidth / 2, posY + imgHeight / 2);
-  }
 
   if (posX >= maxX) {
     posX = maxX;
@@ -131,21 +133,38 @@ function animateDVD(currentTime) {
   requestAnimationFrame(animateDVD);
 }
 
-function initSparks() {
-  document.querySelectorAll('.spark-btn-wrapper').forEach(wrapper => {
-    const btn = wrapper.querySelector('.spark-btn');
-    const rect = wrapper.querySelector('.spark-path');
+function setSparkRect(wrapper) {
+  const btn = wrapper.querySelector('.spark-btn');
+  const rect = wrapper.querySelector('.spark-path');
+  const w = btn.offsetWidth - 2;
+  const h = btn.offsetHeight - 2;
+  if (w <= 0 || h <= 0) return;
 
-    rect.setAttribute('width', btn.offsetWidth - 2);
-    rect.setAttribute('height', btn.offsetHeight - 2);
+  rect.setAttribute('width', w);
+  rect.setAttribute('height', h);
 
-    const total = rect.getTotalLength();
-    const sparkLength = 45;
+  const total = rect.getTotalLength();
+  const sparkLength = 45;
 
-    rect.style.strokeDasharray = `${sparkLength} ${total - sparkLength}`;
-    rect.style.setProperty('--total-length', -total);
-  });
+  rect.style.strokeDasharray = `${sparkLength} ${total - sparkLength}`;
+  rect.style.setProperty('--total-length', -total);
 }
+
+function initSparks() {
+  document.querySelectorAll('.spark-btn-wrapper').forEach(setSparkRect);
+}
+
+if ('ResizeObserver' in window) {
+  const ro = new ResizeObserver(entries => {
+    entries.forEach(entry => setSparkRect(entry.target));
+    updateViewport();
+  });
+  document.querySelectorAll('.spark-btn-wrapper').forEach(w => ro.observe(w));
+} else {
+  window.addEventListener('resize', initSparks);
+}
+window.addEventListener('resize', updateViewport);
+requestAnimationFrame(initSparks);
 
 function processText() {
   autoResizeTextarea();
@@ -171,19 +190,22 @@ function setMode(newMode) {
   processText();
 }
 
+let copyResetTimer = null;
+
 function copyResult() {
   const textToCopy = outputDiv.textContent;
 
   if (!textToCopy || outputDiv.querySelector('.placeholder')) return;
 
   navigator.clipboard.writeText(textToCopy).then(() => {
-    const originalText = copyBtn.textContent;
     copyBtn.textContent = 'Скопійовано!';
     copyBtn.classList.add('copied');
 
-    setTimeout(() => {
-      copyBtn.textContent = originalText;
+    clearTimeout(copyResetTimer);
+    copyResetTimer = setTimeout(() => {
+      copyBtn.textContent = 'Скопіювати';
       copyBtn.classList.remove('copied');
+      copyResetTimer = null;
     }, 2000);
   });
 }
@@ -192,7 +214,6 @@ btnToMaylego.addEventListener('click', () => setMode('toMaylego'));
 btnFromMaylego.addEventListener('click', () => setMode('fromMaylego'));
 copyBtn.addEventListener('click', copyResult);
 inputArea.addEventListener('input', processText);
-window.addEventListener('resize', initSparks);
 
 initSparks();
 bouncingImg.style.transform = 'translate3d(50px, 50px, 0)';
