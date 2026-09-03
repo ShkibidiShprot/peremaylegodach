@@ -93,7 +93,7 @@ function animateDVD(currentTime) {
   if (posX >= maxX) {
     posX = maxX;
     dirX = -1;
-    createImpactSparks(maxX, posY + imgHeight / 2);
+    createImpactSparks(maxX + imgWidth - PARTICLE_SIZE, posY + imgHeight / 2);
   } else if (posX <= 0) {
     posX = 0;
     dirX = 1;
@@ -103,7 +103,7 @@ function animateDVD(currentTime) {
   if (posY >= maxY) {
     posY = maxY;
     dirY = -1;
-    createImpactSparks(posX + imgWidth / 2, maxY);
+    createImpactSparks(posX + imgWidth / 2, maxY + imgHeight - PARTICLE_SIZE);
   } else if (posY <= 0) {
     posY = 0;
     dirY = 1;
