@@ -37,6 +37,12 @@ document.querySelectorAll('.card').forEach(card => {
 });
 
 function createImpactSparks(x, y) {
+  const vw = document.documentElement.clientWidth;
+  const vh = window.innerHeight;
+  const EDGE = 40;
+  const particles = [];
+  const fragment = document.createDocumentFragment();
+
   for (let i = 0; i < 8; i++) {
     const particle = document.createElement('div');
     particle.className = 'sparkle-particle';
@@ -45,13 +51,23 @@ function createImpactSparks(x, y) {
 
     const angle = Math.random() * Math.PI * 2;
     const distance = 15 + Math.random() * 20;
+    let dx = Math.cos(angle) * distance;
+    let dy = Math.sin(angle) * distance;
 
-    particle.style.setProperty('--dx', `${Math.cos(angle) * distance}px`);
-    particle.style.setProperty('--dy', `${Math.sin(angle) * distance}px`);
+    if (x > vw - EDGE) dx = -Math.abs(dx);
+    else if (x < EDGE) dx = Math.abs(dx);
+    if (y > vh - EDGE) dy = -Math.abs(dy);
+    else if (y < EDGE) dy = Math.abs(dy);
 
-    document.body.appendChild(particle);
-    setTimeout(() => particle.remove(), 500);
+    particle.style.setProperty('--dx', `${dx}px`);
+    particle.style.setProperty('--dy', `${dy}px`);
+
+    fragment.appendChild(particle);
+    particles.push(particle);
   }
+
+  document.body.appendChild(fragment);
+  setTimeout(() => particles.forEach(p => p.remove()), 500);
 }
 
 const BASE_SPEED_X = 140;
