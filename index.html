@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Майлего Генератор</title>
+</head>
+<body>
+
+  <img id="bouncingImage" src="/assets/dvd.jpg" alt="DVD Background">
+
+  <div class="container">
+    <div class="site-logo">
+      ПЕРЕМАЙЛЕГОДАЧ
+    </div>
+
+    <div class="card">
+      <h2>Режим перекладу</h2>
+      <div class="tabs">
+        <div id="wrapperTo" class="spark-btn-wrapper active">
+          <button id="btnToMaylego" type="button" class="spark-btn">В Майлего</button>
+          <svg class="spark-svg"><rect class="spark-path" rx="8" ry="8" x="1" y="1"></rect></svg>
+        </div>
+        <div id="wrapperFrom" class="spark-btn-wrapper">
+          <button id="btnFromMaylego" type="button" class="spark-btn">З Майлего</button>
+          <svg class="spark-svg"><rect class="spark-path" rx="8" ry="8" x="1" y="1"></rect></svg>
+        </div>
+      </div>
+      <textarea id="userInput" placeholder="Пиши/вставляй непотріб тут..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2>Результат</h2>
+      <div id="output" class="output-box">
+        <span class="placeholder">Тут з'явиться майлеготат.</span>
+      </div>
+      <div class="spark-btn-wrapper copy-btn-wrapper full-width">
+        <button id="copyBtn" type="button" class="spark-btn">Скопіювати</button>
+        <svg class="spark-svg"><rect class="spark-path" rx="8" ry="8" x="1" y="1"></rect></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Точка входу Vite: звідси підтягнуться і JS, і CSS -->
+  <script type="module" src="/src/main.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3522b471ff3ecb4',t:'MTc4ODQxMTM5OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
